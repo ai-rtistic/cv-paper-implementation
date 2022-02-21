@@ -17,7 +17,7 @@ framework 는  Pytorch, Tensorflow 을 이용해서 구현하겠습니다.
 ## ImageNet Evolution
 
 
-- __AlexNet__  
+- [__AlexNet__](https://github.com/ai-rtistic/cv-papers-implementation/tree/main/AlexNet)  
   Krizhevsky, Alex, Ilya Sutskever, and Geoffrey E. Hinton. "**Imagenet classification with deep convolutional neural networks**." Advances in neural information processing systems. 2012. [[pdf]](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf)  
    **(Deep Learning Breakthrough)**  
 
