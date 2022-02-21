@@ -35,6 +35,7 @@ class LeNet(nn.Module):
         return x
 
 
-# x = torch.torch.randn(64,1,32,32)
-# model = LeNet()
-# print(model(x).shape)  -> output : 64 x 10
+if __name__ == '__main__':
+    x = torch.randn(64,1,32,32)
+    model = LeNet()
+    print(model(x).shape)  #  output : 64 x 10
