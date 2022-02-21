@@ -10,7 +10,7 @@ framework 는  Pytorch, Tensorflow 을 이용해서 구현하겠습니다.
 
 ## Convolution Neural Networks
 
-- __LeNet__  
+- [__LeNet__](https://github.com/ai-rtistic/cv-papers-implementation/tree/main/LeNet)  
    Y. Lecun, L. Bottou, Y. Bengio, P. Haffner. "**Gradient-based earning applied to document recognition**." (1998). [pdf](http://vision.stanford.edu/cs598_spring07/papers/Lecun98.pdf)
 
 
