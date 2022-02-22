@@ -23,7 +23,7 @@ framework 는  Pytorch, Tensorflow 을 이용해서 구현하겠습니다.
 
 
 
-- __VGGNet__  
+- [__VGGNet__](https://github.com/ai-rtistic/cv-papers-implementation/tree/main/VGGNet)  
   Simonyan, Karen, and Andrew Zisserman. "**Very deep convolutional networks for large-scale image recognition**." arXiv preprint arXiv:1409.1556 (2014). [[pdf]](https://arxiv.org/pdf/1409.1556.pdf)  
   **(Neural Networks become very deep!)**
 
