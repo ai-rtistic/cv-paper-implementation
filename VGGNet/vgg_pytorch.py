@@ -5,7 +5,8 @@ import torchvision
 
 
 arc = {
-	'VGG16' : [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M']
+	'VGG16' : [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 'M', 512, 512, 512, 'M', 512, 512, 512, 'M'],
+    'VGG19' : [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M']
 }
 
 
@@ -56,13 +57,19 @@ class VGGNet(nn.Module):
 
 
 if __name__ == '__main__':			
-    x= torch.randn(64, 3, 224, 224)
+    x= torch.randn(1, 3, 224, 224)
 
-    model_custom = VGGNet()
-    print(model_custom(x).shape)
+    model_custom_16 = VGGNet(architecture='VGG16')
+    print(model_custom_16(x).shape)
 
-    model_torch = torchvision.models.vgg11()
-    print(model_torch(x).shape)
+    model_torch_16 = torchvision.models.vgg16_bn()
+    print(model_torch_16(x).shape)
+
+    model_custom_19 = VGGNet(architecture='VGG19')
+    print(model_custom_19(x).shape)
+
+    model_torch_19 = torchvision.models.vgg19_bn()
+    print(model_torch_19(x).shape)
 
 
 
