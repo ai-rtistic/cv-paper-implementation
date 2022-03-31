@@ -36,8 +36,28 @@ framework 는  Pytorch, Tensorflow 을 이용해서 구현하겠습니다.
   He, Kaiming, et al. "**Deep residual learning for image recognition**." arXiv preprint arXiv:1512.03385 (2015). [[pdf]](https://arxiv.org/pdf/1512.03385.pdf)  
   **(Very very deep networks, CVPR best paper)**
 
+<br/>
+
+***
+
+## Object Detection
+
+- [__YOLO v1__]()  
+  Redmon, Joseph, et al. "__You only look once: Unified, real-time object detection.__" arXiv preprint arXiv:1506.02640 (2015). [[pdf]](https://arxiv.org/abs/1506.02640)
+
+
+
+- [__Faster R-CNN__]()  
+  Ren, Shaoqing, et al. "__Faster R-CNN: Towards real-time object detection with region proposal networks.__" Advances in neural information processing systems. 2015. [[pdf]](https://arxiv.org/pdf/1506.01497.pdf)
+
+
+
+<br/>
+
+
 ***
 
 ## Human Pose Estimation
-- [__Stacked Hourglass Networks__]()  
+- [__Stacked Hourglass Networks__](https://github.com/ai-rtistic/cv-papers-implementation/tree/main/Stacked%20Hourglass%20Networks)  
   Alejandro Newell, Kaiyu Yang, Jia Deng. "**Stacked hourglass networks for human pose estimation**." arXiv preprint	arXiv:1603.06937 2016 [[pdf]](https://arxiv.org/abs/1603.06937)
+
