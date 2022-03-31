@@ -7,7 +7,7 @@ class VOCDataset(torch.utils.data.Dataset):
     def __init__(self, csv_file, img_dir, label_dir, S=7, B=2, C=20, transform=None):
         self.annotations = pd.read_csv(csv_file)
         self.img_dir = img_dir
-        self.lable_dir = label_dir
+        self.label_dir = label_dir
         self.transform = transform
         self.S = S
         self.B = B
@@ -17,7 +17,7 @@ class VOCDataset(torch.utils.data.Dataset):
         return len(self.annotations)
 
     def __getitem__(self, index):
-        label_path = os.path.join(self.lable_dir, self.annotations.iloc[index, 1])
+        label_path = os.path.join(self.label_dir, self.annotations.iloc[index, 1])
         boxes = []
         with open(label_path) as f:
             for label in f.readlines():
@@ -27,7 +27,7 @@ class VOCDataset(torch.utils.data.Dataset):
 
                 boxes.append([class_label, x, y, width, height])
         
-        img_path = os.path.join(self.img_dir, self.annotations[index, 0])
+        img_path = os.path.join(self.img_dir, self.annotations.iloc[index, 0])
         image = Image.open(img_path)
         boxes = torch.tensor(boxes)
 
@@ -51,7 +51,7 @@ class VOCDataset(torch.utils.data.Dataset):
 
         return image, label_matrix
 
-        
+
 
 
         

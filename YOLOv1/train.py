@@ -5,7 +5,7 @@ import torch.optim as optim
 import torchvision.transforms.functional as FT
 from tqdm import tqdm
 from torch.utils.data import DataLoader
-from yolov1_pytorch import YOlov1
+from yolov1_pytorch import Yolov1
 from dataset import VOCDataset
 from utils import (
     intersection_over_union,
@@ -96,7 +96,7 @@ def main():
         batch_size=BATCH_SIZE,
         num_workers=NUM_WORKERS,
         pin_memory=PIN_MEMORY,
-        shuffle=False
+        shuffle=False,
         drop_last=True
     )
 
