@@ -21,25 +21,27 @@ class Yolov2Loss(nn.modules.loss._Loss):
         self.thresh = thresh
 
     def forward(self, output, target):
-
+        # output (10, 125, 13, 13)
         batch_size = output.data.size(0)
         height = output.data.size(2)
         width = output.data.size(3)
 
         # Get x,y,w,h,conf,cls
-        output = output.view(batch_size, self.num_anchors, -1, height * width)
-        coord = torch.zeros_like(output[:, :, :4, :])
-        coord[:, :, :2, :] = output[:, :, :2, :].sigmoid()  
+        output = output.view(batch_size, self.num_anchors, -1, height * width)   # (10, 5, 25, 169)
+        coord = torch.zeros_like(output[:, :, :4, :])   # (10, 5, 4, 169)
+        coord[:, :, :2, :] = output[:, :, :2, :].sigmoid()
         coord[:, :, 2:4, :] = output[:, :, 2:4, :]
         conf = output[:, :, 4, :].sigmoid()
         cls = output[:, :, 5:, :].contiguous().view(
             batch_size * self.num_anchors, self.num_classes,
-            height * width).transpose(1, 2).contiguous().view(-1,self.num_classes)
+            height * width).transpose(1, 2).contiguous().view(-1,self.num_classes)   # (8540, 20)
 
         # Create prediction boxes
-        pred_boxes = torch.FloatTensor(batch_size * self.num_anchors * height * width, 4)
-        lin_x = torch.range(0, width - 1).repeat(height, 1).view(height * width)
-        lin_y = torch.range(0, height - 1).repeat(width, 1).t().contiguous().view(height * width)
+        pred_boxes = torch.FloatTensor(batch_size * self.num_anchors * height * width, 4)  # (10*5*13*13, 4)
+        lin_x = torch.range(0, width - 1).repeat(height, 1).view(height * width) # (169)
+        # lin_x = tensor[0., 1., 2., 3., ..., 12., 0., 1., 2., 3., ...12., ...]
+        lin_y = torch.range(0, height - 1).repeat(width, 1).t().contiguous().view(height * width) # (169)
+        # lin_y = tensor[0., 0., 0., 0., ...,  0., 1., 1., 1., 1., ....1., ...]
         anchor_w = self.anchors[:, 0].contiguous().view(self.num_anchors, 1)
         anchor_h = self.anchors[:, 1].contiguous().view(self.num_anchors, 1)
 
@@ -49,6 +51,9 @@ class Yolov2Loss(nn.modules.loss._Loss):
             lin_y = lin_y.cuda()
             anchor_w = anchor_w.cuda()
             anchor_h = anchor_h.cuda()
+
+        # print(coord[:, :, 0].detach().shape) # (10, 5, 149)
+        # print((coord[:, :, 0].detach() + lin_x).view(-1).shape)   # (8450)
 
         pred_boxes[:, 0] = (coord[:, :, 0].detach() + lin_x).view(-1)
         pred_boxes[:, 1] = (coord[:, :, 1].detach() + lin_y).view(-1)
@@ -86,12 +91,12 @@ class Yolov2Loss(nn.modules.loss._Loss):
     def build_targets(self, pred_boxes, ground_truth, height, width):
         batch_size = len(ground_truth)
 
-        conf_mask = torch.ones(batch_size, self.num_anchors, height * width, requires_grad=False) * self.noobject_scale
-        coord_mask = torch.zeros(batch_size, self.num_anchors, 1, height * width, requires_grad=False)
-        cls_mask = torch.zeros(batch_size, self.num_anchors, height * width, requires_grad=False).byte()
-        tcoord = torch.zeros(batch_size, self.num_anchors, 4, height * width, requires_grad=False)
-        tconf = torch.zeros(batch_size, self.num_anchors, height * width, requires_grad=False)
-        tcls = torch.zeros(batch_size, self.num_anchors, height * width, requires_grad=False)
+        conf_mask = torch.ones(batch_size, self.num_anchors, height * width, requires_grad=False) * self.noobject_scale  # (10, 5, 13*13)
+        coord_mask = torch.zeros(batch_size, self.num_anchors, 1, height * width, requires_grad=False)  # (10, 5, 1, 13*13)
+        cls_mask = torch.zeros(batch_size, self.num_anchors, height * width, requires_grad=False).byte() # (10, 5, 13*13)
+        tcoord = torch.zeros(batch_size, self.num_anchors, 4, height * width, requires_grad=False)  # (10, 5, 4, 13*13)
+        tconf = torch.zeros(batch_size, self.num_anchors, height * width, requires_grad=False)  # (10, 5, 13*13)
+        tcls = torch.zeros(batch_size, self.num_anchors, height * width, requires_grad=False)  # (10, 5, 13*13)
 
         for b in range(batch_size):
             if len(ground_truth[b]) == 0:

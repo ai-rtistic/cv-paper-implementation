@@ -14,7 +14,7 @@ def post_processing(logits, image_size, gt_classes, anchors, conf_threshold, nms
     num_anchors = len(anchors)
     anchors = torch.Tensor(anchors)
     if isinstance(logits, Variable):
-        logits = logits.data
+        logits = logits.data    # logit : (1, 125, 13, 13)
 
     if logits.dim() == 3:
         logits.unsqueeze_(0)
@@ -25,7 +25,9 @@ def post_processing(logits, image_size, gt_classes, anchors, conf_threshold, nms
 
     # Compute xc,yc, w,h, box_score on Tensor
     lin_x = torch.linspace(0, w - 1, w).repeat(h, 1).view(h * w)
+    # lin_x = tensor[0., 1., 2., 3., ..., 12., 0., 1., 2., 3., ...12., ...]
     lin_y = torch.linspace(0, h - 1, h).repeat(w, 1).t().contiguous().view(h * w)
+    # lin_y = tensor[0., 0., 0., 0., ...,  0., 1., 1., 1., 1., ....1., ...]
     anchor_w = anchors[:, 0].contiguous().view(1, num_anchors, 1)
     anchor_h = anchors[:, 1].contiguous().view(1, num_anchors, 1)
     if torch.cuda.is_available():
@@ -34,7 +36,7 @@ def post_processing(logits, image_size, gt_classes, anchors, conf_threshold, nms
         anchor_w = anchor_w.cuda()
         anchor_h = anchor_h.cuda()
 
-    logits = logits.view(batch, num_anchors, -1, h * w)
+    logits = logits.view(batch, num_anchors, -1, h * w)    # (1, 5, 25, 169)
     logits[:, :, 0, :].sigmoid_().add_(lin_x).div_(w)
     logits[:, :, 1, :].sigmoid_().add_(lin_y).div_(h)
     logits[:, :, 2, :].exp_().mul_(anchor_w).div_(w)
@@ -43,7 +45,7 @@ def post_processing(logits, image_size, gt_classes, anchors, conf_threshold, nms
 
     with torch.no_grad():
         cls_scores = torch.nn.functional.softmax(logits[:, :, 5:, :], 2)
-    cls_max, cls_max_idx = torch.max(cls_scores, 2)
+    cls_max, cls_max_idx = torch.max(cls_scores, 2)  # clas_max, clas_max_idx (1, 5, 169)
     cls_max_idx = cls_max_idx.float()
     cls_max.mul_(logits[:, :, 4, :])
 

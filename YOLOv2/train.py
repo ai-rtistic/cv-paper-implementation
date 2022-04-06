@@ -1,11 +1,15 @@
 import os
 import argparse
+import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from dataset import VOCDataset
 from utils import *
 from loss import Yolov2Loss
 from yolov2_pytorch import Yolov2
+
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 
 def get_args():
@@ -36,6 +40,15 @@ def get_args():
 
     args = parser.parse_args()
     return args
+
+
+
+def weights_init(m):
+    if isinstance(m, nn.Conv2d):
+        nn.init.normal_(m.weight, 0.0, 0.01)
+    elif isinstance(m, nn.BatchNorm2d):
+        nn.init.normal_(m.weight, 0.0, 0.01)
+        nn.init.constant_(m.bias, 0)
 
 
 def train(opt):
@@ -79,8 +92,10 @@ def train(opt):
         nn.init.normal_(list(model.modules())[-1].weight, 0, 0.01)
     
     else:
-        # weight initialize for the whole network
-        nn.init.normal_(list(model.modules()).weight, 0, 0.01)
+        model = Yolov2(train_dataset.num_classes).to(device)
+
+         # weight initialize for the whole network
+    #     weights_init(model)
     
     criterion = Yolov2Loss(train_dataset.num_classes, model.anchors, opt.reduction)
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-5, momentum=opt.momentum, weight_decay=opt.decay)
@@ -152,8 +167,8 @@ def train(opt):
                 best_loss = te_loss
                 best_epoch = epoch
                 # torch.save(model, opt.saved_path + os.sep + "trained_yolo_voc")
-                torch.save(model.state_dict(), opt.saved_path + os.sep + "only_params_trained_yolo_voc")
-                torch.save(model, opt.saved_path + os.sep + "whole_model_trained_yolo_voc")
+                torch.save(model.state_dict(), opt.saved_path + os.sep + "only_params_trained_yolo_voc.pt")
+                torch.save(model, opt.saved_path + os.sep + "whole_model_trained_yolo_voc.pt")
 
             # Early stopping
             if epoch - best_epoch > opt.es_patience > 0:
@@ -162,5 +177,6 @@ def train(opt):
 
 
 if __name__ == "__main__":
+    device = torch.device('cuda' if torch.cuda.is_available else 'cpu')
     opt = get_args()
     train(opt)

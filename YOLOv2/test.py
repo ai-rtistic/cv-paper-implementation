@@ -18,7 +18,7 @@ def get_args():
     parser.add_argument("--conf_threshold", type=float, default=0.35)
     parser.add_argument("--nms_threshold", type=float, default=0.5)
     parser.add_argument("--pre_trained_model_type", type=str, choices=["model", "params"], default="model")
-    parser.add_argument("--pre_trained_model_path", type=str, default="trained_models/whole_model_trained_yolo_voc")
+    parser.add_argument("--pre_trained_model_path", type=str, default="trained_models/whole_model_trained_yolo_voc.pt")
     parser.add_argument("--input", type=str, default="test_images")
     parser.add_argument("--output", type=str, default="test_images")
 
@@ -48,7 +48,7 @@ def test(opt):
         image = cv2.imread(image_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         height, width = image.shape[:2]
-        image = cv2.resize(image, (opt.image_size, opt.image_size))
+        image = cv2.resize(image, (416, 416))
         image = np.transpose(np.array(image, dtype=np.float32), (2, 0, 1))
         image = image[None, :, :, :]
         width_ratio = float(opt.image_size) / width
@@ -58,8 +58,10 @@ def test(opt):
             data = data.cuda()
         with torch.no_grad():
             logits = model(data)
-            predictions = post_processing(logits, opt.image_size, CLASSES, model.anchors, opt.conf_threshold,
-                                          opt.nms_threshold)
+            predictions = post_processing(logits, opt.image_size, CLASSES, model.anchors, opt.conf_threshold, opt.nms_threshold)
+            print(predictions.shape)
+
+
         if len(predictions) != 0:
             predictions = predictions[0]
             output_image = cv2.imread(image_path)

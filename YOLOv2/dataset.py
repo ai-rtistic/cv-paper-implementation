@@ -5,7 +5,7 @@ from data_augmentation import *
 import cv2
 
 class VOCDataset(Dataset):
-    def __init__(self, root_path="data/VOCdevkit", year="2007", mode="train", image_size=448, is_training = True):
+    def __init__(self, root_path="data/VOCdevkit", year="2007", mode="train", image_size=416, is_training = True):
         if (mode in ["train", "val", "trainval", "test"] and year == "2007"):
             self.data_path = os.path.join(root_path, "VOC{}".format(year))
         id_list_path = os.path.join(self.data_path, "ImageSets/Main/{}.txt".format(mode))
@@ -36,9 +36,9 @@ class VOCDataset(Dataset):
             label = self.classes.index(obj.find('name').text.lower().strip())
             objects.append([xmin, ymin, xmax, ymax, label])
         if self.is_training:
-            transformations = Compose([HSVAdjust(), VerticalFlip(), Crop(), Resize(self.image_size)])
+            transformations = Compose([HSVAdjust(), VerticalFlip(), Crop(), Resize(416)])
         else:
-            transformations = Compose([Resize(self.image_size)])
+            transformations = Compose([Resize(416)])
         image, objects = transformations((image, objects))
 
         return np.transpose(np.array(image, dtype=np.float32), (2, 0, 1)), np.array(objects, dtype=np.float32)
