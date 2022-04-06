@@ -42,7 +42,7 @@ framework 는  Pytorch, Tensorflow 을 이용해서 구현하겠습니다.
 
 ## Object Detection
 
-- [__YOLO v1__]()  
+- [__YOLO v1__](https://github.com/ai-rtistic/cv-papers-implementation/tree/main/YOLOv1)  
   Redmon, Joseph, et al. "__You only look once: Unified, real-time object detection.__" arXiv preprint arXiv:1506.02640 (2015). [[pdf]](https://arxiv.org/abs/1506.02640)
 
 
@@ -50,6 +50,11 @@ framework 는  Pytorch, Tensorflow 을 이용해서 구현하겠습니다.
 - [__Faster R-CNN__]()  
   Ren, Shaoqing, et al. "__Faster R-CNN: Towards real-time object detection with region proposal networks.__" Advances in neural information processing systems. 2015. [[pdf]](https://arxiv.org/pdf/1506.01497.pdf)
 
+
+- [__YOLO v2__]()
+  Joseph Redmon, Ali Farhadi. "__YOLO9000: Better, Faster, Stronger__" 	arXiv preprint arXiv:1612.08242 (2016). [[pdf]](https://arxiv.org/pdf/1612.08242.pdf)  
+
+  
 
 
 <br/>
